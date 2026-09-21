@@ -4,65 +4,95 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>ระบบส่งข่าวประชาสัมพันธ์ | คณะสาธารณสุขศาสตร์</title>
-
-  <!-- ============================================================
-       จุดเดียวที่ต้องแก้: ใส่ URL เว็บแอป GAS ของคุณตรงนี้
-       เวลา Deploy ใหม่แล้ว URL เปลี่ยน ให้กลับมาแก้แค่บรรทัดนี้
-       ============================================================ -->
-  <script>
-    var GAS_URL = 'https://script.google.com/macros/s/AKfycbxAKNyWdfdKkZNCe2urfcXpsGfvnV1d2fOn4HceSQYSADn9cqo_rzU3HhkCO5B9YoJ33w/exec';
-
-    // ส่งต่อ query string ทั้งหมด (?page=admin, ?page=status) ไปด้วย
-    var target = GAS_URL + window.location.search;
-
-    // replace แทน href เพื่อไม่ให้ปุ่ม Back ติดลูป
-    window.location.replace(target);
-  </script>
-
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;600&display=swap" rel="stylesheet">
   <style>
     body {
       font-family: 'Kanit', 'Segoe UI', sans-serif;
-      background: #0a0e17;
+      margin: 0;
       color: #e2e8f0;
+      background-color: #0a0e17;
+      background-image:
+        radial-gradient(circle at 15% 15%, rgba(34,211,238,0.12), transparent 40%),
+        radial-gradient(circle at 85% 10%, rgba(168,85,247,0.14), transparent 40%),
+        radial-gradient(circle at 50% 100%, rgba(236,72,153,0.10), transparent 45%),
+        linear-gradient(rgba(148,163,184,0.06) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(148,163,184,0.06) 1px, transparent 1px);
+      background-size: auto, auto, auto, 42px 42px, 42px 42px;
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      height: 100vh;
-      margin: 0;
+      min-height: 100vh;
       text-align: center;
       padding: 20px;
+      box-sizing: border-box;
     }
     .spinner {
-      width: 38px; height: 38px;
-      border: 3px solid rgba(34,211,238,0.2);
+      width: 46px; height: 46px;
+      border: 3px solid rgba(34,211,238,0.15);
       border-top-color: #22d3ee;
+      border-right-color: #a855f7;
       border-radius: 50%;
       animation: spin 0.8s linear infinite;
-      margin-bottom: 18px;
+      margin-bottom: 22px;
+      box-shadow: 0 0 20px rgba(34,211,238,0.25);
     }
     @keyframes spin { to { transform: rotate(360deg); } }
-    h1 { font-size: 17px; font-weight: 600; margin: 0 0 6px; }
-    p { font-size: 13px; color: #94a3b8; margin: 0 0 16px; }
-    a {
-      color: #67e8f9;
-      font-size: 13px;
-      text-decoration: none;
-      border: 1px solid rgba(34,211,238,0.4);
-      background: rgba(34,211,238,0.1);
-      padding: 8px 16px;
-      border-radius: 999px;
+    .icon { font-size: 34px; margin-bottom: 10px; filter: drop-shadow(0 0 10px rgba(34,211,238,0.6)); }
+    h1 { font-size: 18px; font-weight: 600; margin: 0 0 4px; }
+    .org { font-size: 13px; color: #a5b4fc; margin: 0 0 22px; }
+    .progress {
+      width: 200px; height: 4px; border-radius: 999px;
+      background: rgba(148,163,184,0.15); overflow: hidden; margin-bottom: 20px;
     }
+    .progress .bar {
+      height: 100%; width: 0;
+      background: linear-gradient(90deg, #06b6d4, #8b5cf6, #ec4899);
+      animation: fill 1.2s ease-out forwards;
+    }
+    @keyframes fill { to { width: 100%; } }
+    .hint { font-size: 12px; color: #64748b; margin: 0 0 12px; opacity: 0; transition: opacity 0.4s; }
+    .hint.show { opacity: 1; }
+    a.manual {
+      color: #67e8f9; font-size: 13px; text-decoration: none;
+      border: 1px solid rgba(34,211,238,0.4); background: rgba(34,211,238,0.1);
+      padding: 8px 18px; border-radius: 999px; opacity: 0; transition: opacity 0.4s;
+    }
+    a.manual.show { opacity: 1; }
   </style>
 </head>
 <body>
+  <div class="icon">📢</div>
   <div class="spinner"></div>
-  <h1>📢 กำลังเข้าสู่ระบบส่งข่าวประชาสัมพันธ์</h1>
-  <p>หากไม่เปลี่ยนหน้าอัตโนมัติภายใน 3 วินาที กรุณากดปุ่มด้านล่าง</p>
-  <a id="manualLink" href="#">เข้าสู่ระบบ →</a>
+  <h1>กำลังเข้าสู่ระบบส่งข่าวประชาสัมพันธ์</h1>
+  <p class="org">งานประชาสัมพันธ์ คณะสาธารณสุขศาสตร์</p>
+  <div class="progress"><div class="bar"></div></div>
+  <p class="hint" id="hint">หากไม่เปลี่ยนหน้าอัตโนมัติ กรุณากดปุ่มด้านล่าง</p>
+  <a class="manual" id="manualLink" href="#">เข้าสู่ระบบ →</a>
 
   <script>
+    // ============================================================
+    // จุดเดียวที่ต้องแก้: ใส่ URL เว็บแอป GAS ของคุณตรงนี้
+    // ============================================================
+    var GAS_URL = 'https://script.google.com/macros/s/AKfycbxAKNyWdfdKkZNCe2urfcXpsGfvnV1d2fOn4HceSQYSADn9cqo_rzU3HhkCO5B9YoJ33w/exec';
+
+    // เวลาแสดงหน้า loading ก่อนเปลี่ยนหน้า (มิลลิวินาที) 1200 = 1.2 วินาที
+    var DELAY_MS = 1200;
+
+    var target = GAS_URL + window.location.search;
     document.getElementById('manualLink').href = target;
+
+    setTimeout(function () {
+      window.location.replace(target);
+    }, DELAY_MS);
+
+    // ถ้าผ่านไป 4 วินาทียังไม่เปลี่ยนหน้า ให้โชว์ปุ่มกดเอง
+    setTimeout(function () {
+      document.getElementById('hint').classList.add('show');
+      document.getElementById('manualLink').classList.add('show');
+    }, 4000);
   </script>
 </body>
 </html>
